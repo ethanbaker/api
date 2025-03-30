@@ -1,0 +1,35 @@
+# Binaries and executables
+*.exe
+*.out
+*.app
+
+# Go-specific files
+/bin/
+/pkg/
+
+# Dependency files
+vendor/
+
+# Configuration and environment files
+.env
+config.yaml
+config.json
+
+# IDE/editor specific files
+*.vscode/
+*.idea/
+*.swp
+*.swo
+
+# Logs and debug files
+*.log
+*.test
+
+# Build artifacts
+*.o
+*.a
+*.so
+
+# Cache files
+.cache/
+cover.out
