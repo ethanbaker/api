@@ -1,5 +1,7 @@
 package common
 
+import "net/http"
+
 // Status represents the status of an API response
 type Status string
 
@@ -28,8 +30,8 @@ type ErrorResponse struct {
 
 // NewSuccessResponse creates a new success response with the given message
 // and optional data.  It sets the HTTP status code to 200 OK
-func NewSuccessResponse(message string, data any) Response {
-	return Response{
+func NewSuccessResponse(message string, data any) (int, Response) {
+	return http.StatusOK, Response{
 		Status:  StatusSuccess,
 		Message: message,
 		Data:    data,
@@ -38,13 +40,13 @@ func NewSuccessResponse(message string, data any) Response {
 
 // NewErrorResponse creates a new error response with the given message,
 // optional data, and HTTP status code.  It uses the ErrorResponse struct
-func NewErrorResponse(statusCode int, message string, data any, code int) ErrorResponse {
-	return ErrorResponse{
+func NewErrorResponse(statusCode int, message string, data any) (int, ErrorResponse) {
+	return statusCode, ErrorResponse{
 		Response: Response{
 			Status:  StatusError,
 			Message: message,
 			Data:    data,
 		},
-		Code: code,
+		Code: statusCode,
 	}
 }
