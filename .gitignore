@@ -5,7 +5,6 @@
 
 # Go-specific files
 /bin/
-/pkg/
 
 # Dependency files
 vendor/
@@ -33,3 +32,7 @@ config.json
 # Cache files
 .cache/
 cover.out
+
+# Debug bins
+*.dbg
+__debug*

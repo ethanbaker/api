@@ -8,7 +8,6 @@ Here are different preset "variables" that you can search and replace in this te
 `path_to_logo`
 `path_to_demo`
 -->
-
 <div id="top"></div>
 
 
@@ -16,7 +15,7 @@ Here are different preset "variables" that you can search and replace in this te
 <!-- 
 NEED GITHUB WORKFLOW [![Go Coverage](https://github.com/USER/REPO/wiki/coverage.svg)](https://raw.githack.com/wiki/USER/REPO/coverage.html)
 -->
-![1.0.0](https://img.shields.io/badge/status-1.0.0-yellow)
+![1.1.0](https://img.shields.io/badge/status-1.1.0-yellow)
 [![GoDoc](https://godoc.org/github.com/ethanbaker/api?status.svg)](https://godoc.org/github.com/ethanbaker/api)
 [![Go Report Card](https://goreportcard.com/badge/github.com/ethanbaker/api)](https://goreportcard.com/report/github.com/ethanbaker/api)
 [![Contributors][contributors-shield]][contributors-url]
@@ -33,7 +32,7 @@ NEED GITHUB WORKFLOW [![Go Coverage](https://github.com/USER/REPO/wiki/coverage.
     <img src="./docs/logo.png" alt="Logo" width="80" height="80">
   </a>
 
-  <h3 align="center">Module Go API Template</h3>
+  <h3 align="center">Go-API Template</h3>
 
   <p align="center">
     A modular implementation of a golang API with Gin
@@ -71,19 +70,30 @@ NEED GITHUB WORKFLOW [![Go Coverage](https://github.com/USER/REPO/wiki/coverage.
 ## About
 
 This project provides a well-structured API using Go and the Gin framework. It
-includes authentication, key-based validation, and user management features. The
-implementation follows a modular architecture:
+includes authentication, key-based validation, and user management features. Inside
+the `pkg` directory, there are numerous external packages you can use in your custom
+APIs. In addition, you can clone and modify these packages as needed.
 
-* **Cmd**: Contains the `main.go` file to run the API
+The idea of this project is to serve multiple different API functionalities (dubbed modules)
+from the same instance (or URL if you're self hosting). Each module should be *its own use case* 
+and shouldn't require direct overlap with other modules. For example, you *should* separate
+a personal budget API schema into one module and a netflix movie catalog API schema into a
+different module. You should *not* separate related functionality, such as transactions and
+invoice endpoints for one project, as they probably use common types (`Transaction`, `Invoice`, etc).
 
-* **Config**: Initializes application configuration files. Modify or add cusom
-config files to set up custom services
+The general implementation follows a modular architecture in the `template` directory:
 
-* **Internals**: Handle request validation, authentication, and error handling.
-Modify or add custom middleware for additional security, logging, or app-wide features
+* **internal**: Handle shared functionality between modules. For example, if you are running an API
+to serve multiple customer sites, you'll probably need different modules for each site's
+specifications. But, if all sites implement a chat-bot feature, you could create one common package
+in the `internal` directory to house this
 
-* **Modules**: Custom-defined API modules, all being served from the same API.
+* **modules**: Custom-defined API modules, all being served from the same API.
 Modify these as you desire according to the Gin framework!
+
+* **docs**: Contain documentation (markdown files, word files, images, etc) for your API
+
+* **main.go**: Set global configuration settings and run your API!
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -107,6 +117,8 @@ Modify these as you desire according to the Gin framework!
 
 ### Installation
 
+Install instructions are written in bash for simplicity.
+
 1. Clone the repo
 ```bash
 git clone https://github.com/ethanbaker/api.git
@@ -117,24 +129,25 @@ git clone https://github.com/ethanbaker/api.git
 cd api
 ```
 
-3. Install dependencies
+3. Copy template folder to your intended destination
 ```bash
-go mod tidy
+cp -r templates/ ...
 ```
 
-4. Implement custom modules in the `modules/` directory. You can import module routes into the `cmd/main.go` file
+4. Implement custom modules in the `modules/` directory. You can import module routes into the 
+`main.go` file. You can import `pkg` libraries from this repository directly or modify them
+from the clone and add them to `internal/` in your template
 
 5. Set up environment variables in .env file as needed for your API
 ```bash
 PORT=8080
-DB_URI=your_database_connection_string
 JWT_SECRET=your_secret_key
 ...
 ```
 
 6. Start the server
 ```bash
-go run cmd/main.go
+go run main.go
 ```
 
 <p align="right">(<a href="#top">back to top</a>)</p>
@@ -143,18 +156,23 @@ go run cmd/main.go
 <!-- USAGE EXAMPLES -->
 ## Usage
 
+Example endpoints and `pkg` library usage can be found in the `example` directory.
+
+In order for the `users` module to properly work, you must supply a `.env` file with
+a value for `JWT_SECRET`.
+
 ### Health Module (Open Endpoint)
 
 This module serves as a basic health check. It returns an "ok" message when queried,
 confirming that the API is running. This is the most basic API route with no protection.
 
 ```bash
-curl -X GET 'http://localhost:8080/health/status'
+curl -X GET 'http://localhost:8080/health'
 ```
 
 Response:
 ```json
-{"message":"ok"}
+{"status":"success","code":200,"message":"OK"}
 ```
 
 ### Key Module (API Key Validation)
@@ -169,7 +187,7 @@ curl -X GET 'http://localhost:8080/key/response' -H 'X-API-KEY: 1234567890'
 
 Response:
 ```json
-{"message":"ok"}
+{"status":"success","code":200,"message":"API Key is valid"}
 ```
 
 **Invalid API Query:**
@@ -180,7 +198,7 @@ curl -X GET 'http://localhost:8080/key/response' \
 
 Response:
 ```json
-{"message":"Forbidden"}
+{"status":"fail","code":403,"message":"","error":"Invalid API Key"}
 ```
 
 ### User Module (JWT Authentication)
@@ -195,7 +213,7 @@ curl -X GET 'http://localhost:8080/users/anon-response'
 
 Response:
 ```json
-{"message":"Hello anonymous!"}
+{"status":"success","code":200,"message":"Hello, anonymous user!"}
 ```
 
 **Invalid Protected Query:**
@@ -205,7 +223,7 @@ curl -X GET 'http://localhost:8080/users/response'
 
 Response:
 ```json
-{"message":"cookie token is empty"}
+{"status":"fail","code":401,"message":"","error":"cookie token is empty"}
 ```
 
 **Successful Login Attempt:**
@@ -228,7 +246,7 @@ curl -X GET 'http://localhost:8080/users/response' \
 
 Response:
 ```json
-{"message":"Hello admin!","username":"admin"}
+{"status":"success","code":200,"message":"Hello admin!","data":{"username":"admin"}}
 ```
 
 _For more examples, please refer to the [documentation][documentation-url]._
@@ -239,6 +257,8 @@ _For more examples, please refer to the [documentation][documentation-url]._
 <!-- ROADMAP -->
 ## Roadmap
 
+- [x] Generalizable package
+- [ ] Cmd scaffolding tool
 - [ ] Docker Containerization
 - [ ] Comprehensive MySQL Integration
 
