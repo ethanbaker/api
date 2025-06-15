@@ -20,7 +20,7 @@ func SetSecretKey(jwtSecret string) error {
 	// Load secret
 	secret = []byte(jwtSecret)
 
-	log.Printf("[JWT_AUTH|INFO]: jwt middleware initialized with secret")
+	log.Printf("[JWT_AUTH]: jwt middleware initialized with secret")
 
 	return nil
 }
@@ -34,7 +34,7 @@ func MiddlewareHandler(mw *jwt.GinJWTMiddleware) (gin.HandlerFunc, error) {
 
 	return func(context *gin.Context) {
 		if err := mw.MiddlewareInit(); err != nil {
-			log.Fatalf("[JWT_AUTH|ERR]: Failed to initialize JWT middleware (%s)\n", err)
+			log.Fatalf("[JWT_AUTH]: Failed to initialize JWT middleware (%s)\n", err)
 		}
 	}, nil
 }
@@ -59,6 +59,6 @@ func RegisterRoute(g *gin.RouterGroup, handle *jwt.GinJWTMiddleware, prefix ...s
 	auth.DELETE("/logout", handle.MiddlewareFunc(), handle.LogoutHandler)
 
 	// Log and return
-	log.Printf("[JWT_AUTH|INFO]: JWT routes registered with prefix '%s'", prefix[0])
+	log.Printf("[JWT_AUTH]: JWT routes registered with prefix '%s'", prefix[0])
 	return nil
 }

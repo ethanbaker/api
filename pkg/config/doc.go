@@ -23,15 +23,11 @@
 //
 // Usage Example:
 //
-// ```go
-//
 //	dbHost := config.GetEnvWithDefault("DB_HOST", "localhost")
 //
 //	if !config.KeyExists("JWT_SECRET") {
 //	    log.Fatal("JWT_SECRET is required but not set")
 //	}
-//
-// ```
 //
 // Design Intent:
 //
