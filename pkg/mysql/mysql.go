@@ -29,7 +29,7 @@ func Connect(dsn mysql_driver.Config) error {
 		return fmt.Errorf("no database name provided in dsn")
 	}
 
-	log.Printf("[MYSQL|INFO]: connecting to MySQL database at %s as user %s\n", dsn.Addr, dsn.User)
+	log.Printf("[MYSQL]: connecting to MySQL database at %s as user %s\n", dsn.Addr, dsn.User)
 
 	// Open a new connection to the database
 	var err error
@@ -39,7 +39,7 @@ func Connect(dsn mysql_driver.Config) error {
 		return fmt.Errorf("failed to connect to database: %w", err)
 	}
 
-	log.Printf("[MYSQL|INFO]: connected to MySQL database successfully\n")
+	log.Printf("[MYSQL]: connected to MySQL database successfully\n")
 	return nil
 }
 

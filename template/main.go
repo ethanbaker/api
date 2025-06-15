@@ -2,11 +2,13 @@ package main
 
 import (
 	"log"
-	"net/http"
+	"time"
 
 	"github.com/ethanbaker/api/pkg/config"
 	"github.com/ethanbaker/api/pkg/utils"
+	"github.com/ethanbaker/api/template/modules/custom"
 	"github.com/ethanbaker/api/template/modules/health"
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
 
@@ -25,11 +27,28 @@ func main() {
 	engine := gin.Default()
 	engine.NoRoute(utils.NoRouteHandler)
 
+	// Add trusted proxies
+	engine.SetTrustedProxies(nil)
+
+	// Add CORS using gin-contrib/cors (https://github.com/gin-contrib/cors for documentation)
+	engine.Use(cors.New(cors.Config{
+		AllowOrigins:     []string{"*"},                                       // Your custom origins here
+		AllowMethods:     []string{"OPTIONS", "GET", "POST", "PUT", "DELETE"}, // Your custom methods here
+		AllowHeaders:     []string{"Origin", "Content-Type"},                  // Your custom headers here
+		ExposeHeaders:    []string{"Content-Length"},
+		AllowCredentials: false,
+		MaxAge:           12 * time.Hour,
+	}))
+
+	// Base group '/api' for all API routes
+	baseGroup := engine.Group("/api")
+
 	// - Adding custom modules
-	health.RegisterRoutes(engine)
+	health.RegisterRoutes(baseGroup)
+	custom.RegisterRoutes(baseGroup)
 
 	// Then after performing initial setup, start the server
-	if err := http.ListenAndServe(":"+port, engine); err != nil {
-		log.Fatal(err)
+	if err := engine.Run(":" + port); err != nil {
+		log.Fatal("[MAIN]: Failed to start server: ", err)
 	}
 }

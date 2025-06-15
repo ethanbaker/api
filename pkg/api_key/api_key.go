@@ -1,4 +1,3 @@
-// Handle authentication with api keys
 package api_key
 
 import (

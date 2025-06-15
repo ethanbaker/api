@@ -23,7 +23,7 @@ type JwtParams struct {
 
 // Generate default JWT parameters for the middleware
 func GenerateParams[T User](params JwtParams) (*jwt.GinJWTMiddleware, error) {
-	log.Printf("[JWT_AUTH|INFO]: generating JWT middleware parameters with values: %#v", params)
+	log.Printf("[JWT_AUTH]: generating JWT middleware parameters with values: %#v", params)
 
 	// Read signing algorithm
 	signingAlgorithm := orDefault(params.SigningAlgorithm, "HS256")
@@ -54,7 +54,7 @@ func GenerateParams[T User](params JwtParams) (*jwt.GinJWTMiddleware, error) {
 		return nil, fmt.Errorf("identity key cannot be empty")
 	}
 
-	log.Printf("[JWT_AUTH|INFO]: successfully generated JWT middleware")
+	log.Printf("[JWT_AUTH]: successfully generated JWT middleware")
 
 	return &jwt.GinJWTMiddleware{
 		// Statically defined here
@@ -93,7 +93,7 @@ func generatePayloadFunc[T User](identityKey string) func(data any) jwt.MapClaim
 		// Cast incoming data into a user
 		v, ok := data.(T)
 		if !ok {
-			log.Printf("[JWT_AUTH|WARN]: warning, failed to cast incoming data %#v\n", data)
+			log.Printf("[JWT_AUTH]: warning, failed to cast incoming data %#v\n", data)
 			return jwt.MapClaims{}
 		}
 
