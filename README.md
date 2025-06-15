@@ -15,7 +15,7 @@ Here are different preset "variables" that you can search and replace in this te
 <!-- 
 NEED GITHUB WORKFLOW [![Go Coverage](https://github.com/USER/REPO/wiki/coverage.svg)](https://raw.githack.com/wiki/USER/REPO/coverage.html)
 -->
-![1.1.0](https://img.shields.io/badge/status-1.1.0-yellow)
+![1.1.1](https://img.shields.io/badge/status-1.1.1-yellow)
 [![GoDoc](https://godoc.org/github.com/ethanbaker/api?status.svg)](https://godoc.org/github.com/ethanbaker/api)
 [![Go Report Card](https://goreportcard.com/badge/github.com/ethanbaker/api)](https://goreportcard.com/report/github.com/ethanbaker/api)
 [![Contributors][contributors-shield]][contributors-url]
